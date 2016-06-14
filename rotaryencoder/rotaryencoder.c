@@ -10,12 +10,25 @@
 #define ROTENC_A GPIO0
 #define ROTENC_B GPIO1
 #define ROTENC_EXTI EXTI0
+#define ROTENC_ISR exti0_isr
 
 // TODO Try a different GPIO port
 
-void exti0_isr(void)
+void (*rotenc_dec_cb)(void) = 0;
+void (*rotenc_inc_cb)(void) = 0;
+
+void ROTENC_ISR(void)
 {
-    // TODO
+    if(gpio_get(ROTENC_PORT, ROTENC_B)) {
+        if(rotenc_inc_cb) {
+            rotenc_inc_cb();
+        }
+    }
+    else {
+        if(rotenc_dec_cb) {
+            rotenc_dec_cb();
+        }
+    }
 
     exti_reset_request(ROTENC_EXTI);
 }
