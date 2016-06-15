@@ -4,6 +4,7 @@
 #include <libopencm3/cm3/nvic.h>
 #include "rotaryencoder.h"
 
+// Currently only GPIOA seems to work
 #define ROTENC_PORT GPIOA
 #define ROTENC_RCC RCC_GPIOA
 #define ROTENC_NVIC NVIC_EXTI0_IRQ
@@ -11,8 +12,6 @@
 #define ROTENC_B GPIO1
 #define ROTENC_EXTI EXTI0
 #define ROTENC_ISR exti0_isr
-
-// TODO Try a different GPIO port
 
 void (*rotenc_dec_cb)(void) = 0;
 void (*rotenc_inc_cb)(void) = 0;
