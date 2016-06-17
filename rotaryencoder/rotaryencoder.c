@@ -12,19 +12,23 @@
 #define ROTENC_B GPIO1
 #define ROTENC_EXTI EXTI0
 #define ROTENC_ISR exti0_isr
+#define ROTENC_DIV 2
 
 void (*rotenc_dec_cb)(void) = 0;
 void (*rotenc_inc_cb)(void) = 0;
+static uint8_t _rotenc_counter = 0;
 
 void ROTENC_ISR(void)
 {
     if(gpio_get(ROTENC_PORT, ROTENC_B)) {
-        if(rotenc_inc_cb) {
+        if(rotenc_inc_cb && (++_rotenc_counter == ROTENC_DIV)) {
+            _rotenc_counter = 0;
             rotenc_inc_cb();
         }
     }
     else {
-        if(rotenc_dec_cb) {
+        if(rotenc_dec_cb && (++_rotenc_counter == ROTENC_DIV)) {
+            _rotenc_counter = 0;
             rotenc_dec_cb();
         }
     }
